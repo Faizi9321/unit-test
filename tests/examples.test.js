@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from "vitest";
-import { longestString, isPrime } from "../src/examples";
+import { longestString, isPrime, shippingCost } from "../src/examples";
 
 describe("example.longestString", () => {
   // verifying longest string
@@ -54,19 +54,66 @@ describe("examples.isPrime", () => {
   it("throw an error when passed a non number", () => {
     const badCall = () => isPrime("not a number");
     expect(badCall).toThrow();
-    expect(badCall).toThrow('Input must be a number');
+    expect(badCall).toThrow("Input must be a number");
   });
   // correct type of result
   it("has correct type for result", () => {
     expect(isPrime(7)).toBeTypeOf("boolean");
-    expect(isPrime(Number('7'))).toBe(true);
+    expect(isPrime(Number("7"))).toBe(true);
   });
 });
 
-describe('new test cases for prime numbers', () => {
-  it('treats as 0 and 1 as non prime and 2 are prime', () => {
+describe("new test cases for prime numbers", () => {
+  it("treats as 0 and 1 as non prime and 2 are prime", () => {
     expect(isPrime(0)).toBe(false);
     expect(isPrime(1)).toBe(false);
     expect(isPrime(2)).toBe(true);
+  });
+});
+
+describe("examples.shippingCost", () => {
+  it.each([
+    [1, 3.99],
+    [5, 5.99],
+    [10, 8.99],
+    [20, 8.99],
+    [21, 14.99],
+  ])("calculates shipping cost based on weight", (weight, expectedCost) => {
+    expect(shippingCost(weight)).toBe(expectedCost);
+  });
+
+  it.each([
+    [1, 3.99],
+    [5, 5.99],
+    [20, 8.99],
+    [21, 14.99],
+  ])("charges correct prices at boundaries", (weight, expectedCost) => {
+    expect(shippingCost(weight)).toBe(expectedCost);
+  });
+
+  it.each([
+    [10, "INVALIDCOUPON", 8.99],
+    [5, "ANOTHERCODE", 5.99],
+  ])(
+    "applys 'FREESHIPPING' coupon correctly",
+    (weight, coupon, expectedCost) => {
+      console.log(weight, coupon, expectedCost);
+
+      expect(shippingCost(weight, coupon)).toBe(expectedCost);
+    },
+  );
+
+  it.each([
+    [10, "INVALIDCOUPON", 8.99],
+    [5, "ANOTHERCODE", 5.99],
+  ])("ignores invalid coupons", (weight, coupon, expectedCost) => {
+    expect(shippingCost(weight, coupon)).toBe(expectedCost);
+  });
+
+  it.each([
+    [-1, "Weight must be greater than 0"],
+    [null, "Weight must be a number"],
+  ])("throws error for invalid weight", (weight, expectedError) => {
+    expect(() => shippingCost(weight)).toThrow(expectedError);
   });
 });
