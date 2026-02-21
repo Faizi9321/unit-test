@@ -1,3 +1,5 @@
+import { logDealRound } from './helpers/loggers'
+
 export function deal(cards, handSize, numberOfPlayers) {
   const hands = Array.from({ length: numberOfPlayers }, () => [])
   
@@ -8,6 +10,8 @@ export function deal(cards, handSize, numberOfPlayers) {
       }
       hands[playerIndex].push(cards.shift())
     }
+
+    logDealRound(hands, i + 1)
   }
 
   return hands
